@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Rotating Gallery</title>
+  <style>
+    /* Body and background */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 400% 400%;
+      animation: gradientBackground 15s ease infinite;
+      overflow: hidden;
+    }
+
+    /* Gradient animation for background */
+    @keyframes gradientBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Gallery container */
+    .gallery-container {
+      perspective: 1000px; /* 3D perspective */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Rotating gallery */
+    .gallery {
+      width: 400px;
+      height: 300px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: spinGallery 20s infinite linear;
+      transform-origin: center center;
+    }
+
+    /* Image styling */
+    .gallery img {
+      width: 200px;
+      height: 150px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      transform: translate(-50%, -50%);
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      transition: transform 0.5s ease-in-out;
+    }
+
+    /* Positioning the images at different angles around the circle */
+    .gallery img:nth-child(1) { transform: rotateY(0deg) translateZ(400px); }
+    .gallery img:nth-child(2) { transform: rotateY(51.43deg) translateZ(400px); }
+    .gallery img:nth-child(3) { transform: rotateY(102.86deg) translateZ(400px); }
+    .gallery img:nth-child(4) { transform: rotateY(154.29deg) translateZ(400px); }
+    .gallery img:nth-child(5) { transform: rotateY(205.71deg) translateZ(400px); }
+    .gallery img:nth-child(6) { transform: rotateY(257.14deg) translateZ(400px); }
+    .gallery img:nth-child(7) { transform: rotateY(308.57deg) translateZ(400px); }
+
+    /* Animation to rotate the gallery */
+    @keyframes spinGallery {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    /* Background music control */
+    audio {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Gallery Container -->
+  <div class="gallery-container">
+    <div class="gallery">
+      <img src="i4.png" alt="Image 1">
+      <img src="i5.png" alt="Image 2">
+      <img src="i6.png" alt="Image 3">
+      <img src="i7.png" alt="Image 4">
+      <img src="i8.png" alt="Image 5">
+      <img src="i9.png" alt="Image 6">
+      <img src="i10.png" alt="Image 7">
+    </div>
+  </div>
+
+  <!-- Background Music -->
+  <audio controls autoplay loop>
+    <source src="Burgundy - Tell Me (freetouse.com).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+</body>
+</html>

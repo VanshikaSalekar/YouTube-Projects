@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+    }
+    .quiz {
+      text-align: center;
+      background: rgba(129, 242, 223, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      padding: 20px;
+      max-width: 600px;
+      width: 100%;
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .answer {
+      display: block;
+      background-color: #39e08f;
+      color: #0e0505;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      margin: 10px auto;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .answer:hover {
+      background-color: #00b327;
+      transform: scale(1.05);
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .score {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #000;
+    }
+    .final-score {
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      margin-top: 20px;
+    }
+    .restart {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00ff84;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      align-items: center;
+    }
+    .restart:hover {
+      background-color: #00b327;
+    }
+    .background-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1d9db7, #43c6c1, #7de6e7, #a2fcf4);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+      z-index: -1;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-animation"></div>
+  <div class="quiz">
+    <div class="question" id="question">What is the capital of France?</div>
+    <button class="answer" onclick="checkAnswer(this, true)">Paris</button>
+    <button class="answer" onclick="checkAnswer(this, false)">Rome</button>
+    <button class="answer" onclick="checkAnswer(this, false)">Berlin</button>
+    <div class="result" id="result"></div>
+    <div class="score" id="score">Score: 0</div>
+    <button class="restart" id="restart" onclick="restartQuiz()">Restart Quiz</button>
+  </div>
+
+  <script>
+    const questions = [
+      { question: "What is the capital of France?", answers: [{ text: "Paris", correct: true }, { text: "Rome", correct: false }, { text: "Berlin", correct: false }] },
+      { question: "What is the largest ocean on Earth?", answers: [{ text: "Atlantic Ocean", correct: false }, { text: "Indian Ocean", correct: false }, { text: "Pacific Ocean", correct: true }] },
+      { question: "Which planet is known as the Red Planet?", answers: [{ text: "Mars", correct: true }, { text: "Jupiter", correct: false }, { text: "Saturn", correct: false }] },
+      { question: "Who wrote 'To Kill a Mockingbird'?", answers: [{ text: "Harper Lee", correct: true }, { text: "Mark Twain", correct: false }, { text: "Ernest Hemingway", correct: false }] },
+      { question: "What is the smallest prime number?", answers: [{ text: "1", correct: false }, { text: "2", correct: true }, { text: "3", correct: false }] },
+      { question: "Which element has the chemical symbol 'O'?", answers: [{ text: "Oxygen", correct: true }, { text: "Gold", correct: false }, { text: "Silver", correct: false }] },
+      { question: "In what year did the Titanic sink?", answers: [{ text: "1912", correct: true }, { text: "1905", correct: false }, { text: "1920", correct: false }] },
+      { question: "Who painted the Mona Lisa?", answers: [{ text: "Leonardo da Vinci", correct: true }, { text: "Vincent van Gogh", correct: false }, { text: "Pablo Picasso", correct: false }] },
+      { question: "What is the capital of Japan?", answers: [{ text: "Tokyo", correct: true }, { text: "Seoul", correct: false }, { text: "Beijing", correct: false }] },
+      { question: "Which planet is closest to the Sun?", answers: [{ text: "Mercury", correct: true }, { text: "Venus", correct: false }, { text: "Earth", correct: false }] }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let shuffledQuestions = [];
+
+    function shuffleQuestions() {
+      shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+    }
+
+    function showQuestion(index) {
+      const questionElement = document.getElementById('question');
+      const resultElement = document.getElementById('result');
+      const scoreElement = document.getElementById('score');
+      resultElement.textContent = '';
+      questionElement.textContent = shuffledQuestions[index].question;
+
+      const buttons = document.querySelectorAll('.answer');
+      buttons.forEach((button, i) => {
+        button.textContent = shuffledQuestions[index].answers[i].text;
+        button.onclick = () => checkAnswer(button, shuffledQuestions[index].answers[i].correct);
+      });
+
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    function checkAnswer(button, correct) {
+      const result = document.getElementById('result');
+      if (correct) {
+        result.textContent = "Correct!";
+        result.style.color = 'green';
+        score++;
+      } else {
+        result.textContent = "Wrong!";
+        result.style.color = 'red';
+      }
+      document.getElementById('score').textContent = `Score: ${score}`;
+      
+      setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < shuffledQuestions.length) {
+          showQuestion(currentQuestionIndex);
+        } else {
+          showFinalScore();
+        }
+      }, 1000); // 1 second delay
+    }
+
+    function showFinalScore() {
+      const quizElement = document.querySelector('.quiz');
+      quizElement.innerHTML = `
+        <div class="final-score">Your Final Score: ${score} / ${shuffledQuestions.length}</div>
+        <button class="restart" id="restart" onclick="restartQuiz()">Restart Quiz</button>
+      `;
+      document.getElementById('restart').style.display = 'block';
+    }
+
+    function restartQuiz() {
+      score = 0;
+      currentQuestionIndex = 0;
+      shuffleQuestions();
+      document.getElementById('restart').style.display = 'none';
+      document.querySelector('.quiz').innerHTML = `
+        <div class="question" id="question"></div>
+        <button class="answer"></button>
+        <button class="answer"></button>
+        <button class="answer"></button>
+        <div class="result" id="result"></div>
+        <div class="score" id="score"></div>
+        <button class="restart" id="restart" onclick="restartQuiz()">Restart Quiz</button>
+      `;
+      showQuestion(currentQuestionIndex);
+    }
+
+    shuffleQuestions();
+    showQuestion(currentQuestionIndex);
+  </script>
+</body>
+</html>

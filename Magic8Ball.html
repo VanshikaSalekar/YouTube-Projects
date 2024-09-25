@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic 8-Ball Customizer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #111;
+      color: white;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Enhanced Starfield Background */
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle at center, #111, #000 80%);
+      overflow: hidden;
+    }
+
+    .star-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: white;
+      opacity: 0.8;
+      border-radius: 50%;
+    }
+
+    .star-layer.one .star {
+      animation: twinkle 5s linear infinite;
+    }
+
+    .star-layer.two .star {
+      animation: moveStars 10s linear infinite;
+    }
+
+    .star-layer.three .star {
+      animation: moveStars 15s linear infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 1;
+      }
+    }
+
+    @keyframes moveStars {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
+    .ball {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 30%, #333, #000);
+      border-radius: 50%;
+      width: 250px;
+      height: 250px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(255, 255, 255, 0.1);
+      position: relative;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .reflection {
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      filter: blur(5px);
+    }
+
+    h2 {
+      font-size: 24px;
+      margin: 0;
+      padding: 20px;
+      color: #1e90ff;
+      text-align: center;
+      transition: color 0.5s ease;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .controls {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .controls label {
+      font-size: 16px;
+    }
+
+    input[type="color"], input[type="range"] {
+      width: 200px;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #1e90ff;
+      color: white;
+      font-size: 16px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #4682b4;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    #customize-button {
+      margin-top: 20px;
+      background-color: #ff6347;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="star-layer one"></div>
+    <div class="star-layer two"></div>
+    <div class="star-layer three"></div>
+  </div>
+
+  <div class="ball" id="magicBall">
+    <div class="reflection"></div>
+    <h2 id="answer">Ask Me Anything!</h2>
+  </div>
+
+  <button id="shake-button" onclick="shakeBall()">Shake</button>
+  <button id="customize-button" onclick="toggleControls()">Customize</button>
+
+  <div class="controls" id="controls">
+    <label for="ballColor">Ball Color:</label>
+    <input type="color" id="ballColor" value="#000000" onchange="changeBallColor()">
+    
+    <label for="textColor">Text Color:</label>
+    <input type="color" id="textColor" value="#1e90ff" onchange="changeTextColor()">
+    
+    <label for="ballSize">Ball Size:</label>
+    <input type="range" id="ballSize" min="150" max="350" value="250" oninput="changeBallSize()">
+    
+    <button onclick="resetBall()">Reset</button>
+  </div>
+
+  <script>
+    // Generate stars for each star layer
+    const generateStars = (layer, starCount) => {
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.top = `${Math.random() * 100}vh`;
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.animationDuration = `${Math.random() * 10 + 5}s`;
+        document.querySelector(`.${layer}`).appendChild(star);
+      }
+    }
+
+    generateStars('star-layer.one', 100);
+    generateStars('star-layer.two', 150);
+    generateStars('star-layer.three', 200);
+
+    let answers = [
+      "Yes", "No", "Maybe", "Definitely", 
+      "Ask again later", "Uncertain", "Very doubtful",
+      "Absolutely", "Not a chance", "You got it!",
+      "Without a doubt", "Cannot predict now", "Focus and ask again",
+      "Better not tell you now", "Outlook not so good", "Signs point to yes"
+    ];
+
+    let previousAnswer = null;
+
+    // Shuffle answers to avoid repetition
+    function getRandomAnswer() {
+      let randomAnswer;
+      do {
+        randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+      } while (randomAnswer === previousAnswer);
+      previousAnswer = randomAnswer;
+      return randomAnswer;
+    }
+
+    // Shake the ball
+    function shakeBall() {
+      const ball = document.getElementById('magicBall');
+      ball.style.animation = 'shake 0.5s';
+
+      setTimeout(() => {
+        ball.style.animation = '';
+        document.getElementById('answer').textContent = getRandomAnswer();
+      }, 500);
+    }
+
+    // Reset the ball
+    function resetBall() {
+      document.getElementById('answer').textContent = 'Ask Me Anything!';
+      document.getElementById('ballColor').value = '#000000';
+      document.getElementById('textColor').value = '#1e90ff';
+      document.getElementById('ballSize').value = '250';
+      changeBallColor();
+      changeTextColor();
+      changeBallSize();
+    }
+
+    // Change ball color
+    function changeBallColor() {
+      const ball = document.getElementById('magicBall');
+      const color = document.getElementById('ballColor').value;
+      ball.style.background = `radial-gradient(circle at 30% 30%, ${color}, #000)`;
+    }
+
+    // Change text color
+    function changeTextColor() {
+      const text = document.getElementById('answer');
+      const color = document.getElementById('textColor').value;
+      text.style.color = color;
+    }
+
+    // Change ball size
+    function changeBallSize() {
+      const ball = document.getElementById('magicBall');
+      const size = document.getElementById('ballSize').value;
+      ball.style.width = `${size}px`;
+      ball.style.height = `${size}px`;
+    }
+
+    // Toggle customize controls visibility
+    function toggleControls() {
+      const controls = document.getElementById('controls');
+      controls.style.display = controls.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Neon Glowing Cube</title>
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.cube-container {
+  perspective: 1000px;
+}
+
+.cube {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  transform-style: preserve-3d;
+  transform: rotateX(35deg) rotateY(45deg);
+  animation: rotateCube 8s infinite ease-in-out;
+}
+
+.face {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px solid black;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.front  { transform: translateZ(150px); }
+.back   { transform: rotateY(180deg) translateZ(150px); }
+.left   { transform: rotateY(-90deg) translateZ(150px); }
+.right  { transform: rotateY(90deg) translateZ(150px); }
+.top    { transform: rotateX(90deg) translateZ(150px); }
+.bottom { transform: rotateX(-90deg) translateZ(150px); }
+
+@keyframes rotateCube {
+  0% { transform: rotateX(35deg) rotateY(45deg); }
+  50% { transform: rotateX(235deg) rotateY(245deg); }
+  100% { transform: rotateX(35deg) rotateY(45deg); }
+}
+  </style>
+</head>
+<body>
+  <div class="cube-container">
+    <div class="cube">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face left"></div>
+      <div class="face right"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+    </div>
+  </div>
+  
+  <script>
+    function getRandomNeonColor() {
+  const hue = Math.floor(Math.random() * 360); 
+  const saturation = 100; 
+  const lightness = 60 + Math.random() * 20; 
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;  
+}
+
+const faces = document.querySelectorAll('.face');
+
+setInterval(() => {
+  faces.forEach(face => {
+    const neonColor = getRandomNeonColor();
+    face.style.backgroundColor = neonColor;
+    face.style.boxShadow = `0 0 40px ${neonColor}, 0 0 80px ${neonColor}`;
+  });
+}, 1000);
+  </script>
+</body>
+</html>

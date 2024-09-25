@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Light/Dark Theme Toggle</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: white;
+      color: black;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .dark-mode {
+      background-color: #222;
+      color: #f4f4f9;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #f4f4f9;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s ease, box-shadow 0.3s ease;
+    }
+
+    .container.dark-mode {
+      background-color: #444;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      transition: color 0.5s ease;
+    }
+
+    button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #5c67f2, #4b56d3);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(145deg, #4b56d3, #5c67f2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    .dark-mode button {
+      background: linear-gradient(145deg, #666, #444);
+      color: white;
+    }
+
+    .dark-mode button:hover {
+      background: linear-gradient(145deg, #444, #666);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Light/Dark Mode Toggle</h1>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
+</body>
+</html>

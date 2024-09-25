@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Responsive Navbar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    nav {
+      background: linear-gradient(135deg, #4a4a4a, #1a1a1a);
+      padding: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    ul li {
+      position: relative;
+    }
+    ul li a {
+      color: #f0f0f0;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #6a6a6a, #3a3a3a);
+      transition: background 0.3s, transform 0.3s, color 0.3s;
+    }
+    ul li a:hover {
+      background: linear-gradient(135deg, #7a7a7a, #4a4a4a);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    ul li:hover > ul {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    ul ul {
+      display: flex;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: linear-gradient(135deg, #333, #444);
+      border-radius: 5px;
+      padding: 10px;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    }
+    ul ul li {
+      margin-bottom: 0;
+    }
+    ul ul li a {
+      padding: 10px 20px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #444, #555);
+      transition: background 0.3s, color 0.3s;
+    }
+    ul ul li a:hover {
+      background: linear-gradient(135deg, #555, #666);
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a>
+        <ul>
+          <li><a href="#">Team</a></li>
+          <li><a href="#">History</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Services</a>
+        <ul>
+          <li><a href="#">Design</a></li>
+          <li><a href="#">Development</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</body>
+</html>

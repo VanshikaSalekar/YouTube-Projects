@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Floating Sphere with Particles</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #0e0e0e;
+    }
+
+    .sphere {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      perspective: 1000px;
+      animation: rotateSphere 10s infinite linear;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    }
+
+    .sphere .particle {
+      width: 8px;
+      height: 8px;
+      position: absolute;
+      border-radius: 50%;
+      animation: float 6s infinite ease-in-out, changeColor 5s infinite ease-in-out;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes rotateSphere {
+      0% { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+    }
+
+    @keyframes changeColor {
+      0% { background-color: #ff6b6b; }
+      25% { background-color: #6bffb5; }
+      50% { background-color: #6b8bff; }
+      75% { background-color: #ffb56b; }
+      100% { background-color: #ff6b6b; }
+    }
+
+    /* Styling the Play Music button */
+    #playMusicButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background-color: #6b8bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    #playMusicButton:hover {
+      background-color: #ff6b6b;
+      transform: translateY(-3px);
+    }
+
+    #playMusicButton:active {
+      background-color: #ffb56b;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="sphere">
+    <!-- Randomly positioned particles with colorful and floating effects -->
+    <div class="particle" style="top: 20%; left: 25%; animation-delay: 0s;"></div>
+    <div class="particle" style="top: 50%; left: 70%; animation-delay: 0.5s;"></div>
+    <div class="particle" style="top: 80%; left: 60%; animation-delay: 1s;"></div>
+    <div class="particle" style="top: 30%; left: 45%; animation-delay: 1.5s;"></div>
+    <div class="particle" style="top: 70%; left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="top: 40%; left: 80%; animation-delay: 2.5s;"></div>
+    <div class="particle" style="top: 60%; left: 40%; animation-delay: 3s;"></div>
+    <div class="particle" style="top: 30%; left: 10%; animation-delay: 3.5s;"></div>
+  </div>
+
+  <audio id="backgroundMusic" loop>
+    <source src="/Volumes/SanDisk/My Projects/Burgundy - Tell Me (freetouse.com).mp3" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+
+  <button id="playMusicButton">Play Background Music</button>
+
+  <script>
+    // Adding floating effect to the particles for an enhanced 3D illusion
+    const particles = document.querySelectorAll('.particle');
+    particles.forEach(particle => {
+      const randomSize = Math.random() * 8 + 4; // Random size between 4px and 12px
+      particle.style.width = `${randomSize}px`;
+      particle.style.height = `${randomSize}px`;
+      particle.style.animationDuration = `${Math.random() * 5 + 2}s`;
+    });
+
+    // Play/pause background music with button interaction
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    const playMusicButton = document.getElementById('playMusicButton');
+
+    // Start the music after button is clicked (required by some browsers)
+    playMusicButton.addEventListener('click', function() {
+      backgroundMusic.play();
+      playMusicButton.style.display = 'none'; // Hide the button after music starts
+    });
+  </script>
+</body>
+</html>

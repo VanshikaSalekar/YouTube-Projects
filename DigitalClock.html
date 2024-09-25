@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Clock</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .clock {
+      text-align: center;
+      padding: 40px;
+      border-radius: 20px;
+      background-color: #fff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .dark-mode .clock {
+      background-color: #444;
+      color: #fff;
+    }
+
+    .time {
+      font-size: 60px;
+      margin-bottom: 10px;
+    }
+
+    .date {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      background-color: #4b56d3;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      background-color: #5c67f2;
+    }
+
+    .dark-mode button {
+      background-color: #f35353;
+      color: white;
+    }
+
+    .dark-mode button:hover {
+      background-color: #bf2d2d;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock">
+    <div class="time" id="timeDisplay">00:00:00</div>
+    <div class="date" id="dateDisplay">January 1, 1970</div>
+    <button onclick="toggleMode()">Toggle Day/Night Mode</button>
+    <button class="toggle-format" onclick="toggleFormat()">Toggle 12/24 Hour</button>
+  </div>
+
+  <script>
+    let is24HourFormat = true;
+
+    function updateTime() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      let ampm = '';
+
+      // Format time according to 12 or 24 hour format
+      if (!is24HourFormat) {
+        ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // If 0, display 12
+      } else {
+        ampm = '';  // No AM/PM for 24-hour format
+      }
+      hours = String(hours).padStart(2, '0');
+
+      // Update time
+      const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+      document.getElementById('timeDisplay').textContent = timeString;
+
+      // Update date
+      const dateString = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('dateDisplay').textContent = dateString;
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function toggleFormat() {
+      is24HourFormat = !is24HourFormat;
+      updateTime(); // Update immediately after toggle
+    }
+
+    // Update time every second
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call to display time immediately
+  </script>
+</body>
+</html>

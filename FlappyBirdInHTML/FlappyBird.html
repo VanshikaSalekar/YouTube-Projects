@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Cooper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            background: url('background.png') no-repeat center center/cover;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size to full window size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Load images
+        const birdImg = new Image();
+        const bg = new Image();
+        const pipeNorth = new Image();
+        const pipeSouth = new Image();
+
+        birdImg.src = 'bird.png';      // Bird sprite
+        bg.src = 'background.png';     // Background image
+        pipeNorth.src = 'pipeNorth.png'; // Upper pipe
+        pipeSouth.src = 'pipeSouth.png'; // Lower pipe
+
+        // Bird properties
+        let birdX = 50;
+        let birdY = canvas.height / 2;
+        const birdWidth = 40;
+        const birdHeight = 30;
+        const gravity = 1.5;
+        const jumpStrength = 35;
+
+        // Pipe properties
+        const pipeGap = 20;          // Vertical gap between top and bottom pipes
+        const pipeDistance = 30;     // Horizontal distance between consecutive pipes
+        const pipeWidth = 60;         // Width of the pipes
+        let pipes = [];
+        let score = 0;
+        let pipeSpeed = 3;
+
+        // Background scrolling
+        let bgX = 0;
+
+        // Handle bird movement (jump)
+        document.addEventListener('keydown', function() {
+            birdY -= jumpStrength;  // Bird jumps when a key is pressed
+        });
+
+        // Generate pipes
+        pipes[0] = { x: canvas.width, y: 0 };  // Initial pipe
+
+        // Draw everything
+        function draw() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the background (scrolling)
+            ctx.drawImage(bg, bgX, 0, canvas.width, canvas.height);
+            ctx.drawImage(bg, bgX + canvas.width, 0, canvas.width, canvas.height);
+            bgX -= pipeSpeed;  // Scrolling speed
+
+            if (bgX <= -canvas.width) bgX = 0;
+
+            // Draw pipes and move them
+            for (let i = 0; i < pipes.length; i++) {
+                const constant = pipeNorth.height + pipeGap;
+
+                // Draw upper and lower pipes
+                ctx.drawImage(pipeNorth, pipes[i].x, pipes[i].y);
+                ctx.drawImage(pipeSouth, pipes[i].x, pipes[i].y + constant);
+
+                pipes[i].x -= pipeSpeed;  // Move pipes to the left
+
+                // Generate new pipes
+                if (pipes[i].x === canvas.width / 2) {
+                    pipes.push({
+                        x: canvas.width,
+                        y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height
+                    });
+                }
+
+                // Remove pipes that go off-screen
+                if (pipes[i].x + pipeWidth < 0) {
+                    pipes.shift();
+                }
+
+                // Collision detection (bird with pipes)
+                if (birdX + birdWidth > pipes[i].x && birdX < pipes[i].x + pipeWidth &&
+                    (birdY < pipes[i].y + pipeNorth.height || birdY + birdHeight > pipes[i].y + constant) ||
+                    birdY + birdHeight > canvas.height || birdY < 0) {
+                    alert('Game Over! Final Score: ' + score);
+                    location.reload();  // Restart game on collision
+                }
+
+                // Increase score when the bird passes a pipe
+                if (pipes[i].x + pipeWidth === birdX) {
+                    score++;
+                }
+            }
+
+            // Draw the bird
+            ctx.drawImage(birdImg, birdX, birdY, birdWidth, birdHeight);
+
+            // Apply gravity to the bird
+            birdY += gravity;
+
+            // Draw the score
+            ctx.fillStyle = "#fff";
+            ctx.font = "30px Arial";
+            ctx.fillText("Score: " + score, 10, 50);
+
+            // Continue the game loop
+            requestAnimationFrame(draw);
+        }
+
+        // Start the game loop
+        draw();
+    </script>
+</body>
+</html>

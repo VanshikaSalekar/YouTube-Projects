@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Image Gallery with Lightbox</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: black;
+    }
+    .gallery {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .gallery img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      cursor: pointer;
+    }
+    .gallery img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.7);
+    }
+    /* Lightbox container */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .lightbox img {
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    /* Close button */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #ff5e57;
+      color: white;
+      border: none;
+      font-size: 18px;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+    .close-btn:hover {
+      background-color: #ff1e1e;
+    }
+    /* Caption styling */
+    .caption {
+      position: absolute;
+      bottom: 20px;
+      color: white;
+      font-size: 16px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gallery">
+    <img src="i7.png" alt="Beautiful Landscape" onclick="openLightbox(this)">
+    <img src="i8.png" alt="Mountain View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+    <img src="i5.png" alt="City Lights" onclick="openLightbox(this)">
+    <img src="i6.png" alt="Night Sky" onclick="openLightbox(this)">
+    <img src="i7.png" alt="Beautiful Landscape" onclick="openLightbox(this)">
+    <img src="i8.png" alt="Mountain View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+    <img src="i5.png" alt="City Lights" onclick="openLightbox(this)">
+    <img src="i6.png" alt="Night Sky" onclick="openLightbox(this)">
+    <img src="i7.png" alt="Beautiful Landscape" onclick="openLightbox(this)">
+    <img src="i8.png" alt="Mountain View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+    <img src="i5.png" alt="City Lights" onclick="openLightbox(this)">
+    <img src="i6.png" alt="Night Sky" onclick="openLightbox(this)">
+    <img src="i7.png" alt="Beautiful Landscape" onclick="openLightbox(this)">
+    <img src="i8.png" alt="Mountain View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+    <img src="i7.png" alt="Beautiful Landscape" onclick="openLightbox(this)">
+    <img src="i8.png" alt="Mountain View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+    <img src="i5.png" alt="City Lights" onclick="openLightbox(this)">
+    <img src="i6.png" alt="Night Sky" onclick="openLightbox(this)">
+    <img src="i7.png" alt="Beautiful Landscape" onclick="openLightbox(this)">
+    <img src="i8.png" alt="Mountain View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+    <img src="i4.png" alt="Ocean View" onclick="openLightbox(this)">
+  </div>
+
+  <!-- Lightbox Container -->
+  <div class="lightbox" id="lightbox">
+    <span class="close-btn" onclick="closeLightbox()">✖</span>
+    <img id="lightbox-img" src="" alt="">
+    <div class="caption" id="caption"></div>
+  </div>
+
+  <script>
+    function openLightbox(image) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const caption = document.getElementById('caption');
+      
+      lightboxImg.src = image.src; // Set the clicked image in lightbox
+      caption.textContent = image.alt; // Set the alt text as the caption
+      lightbox.style.display = 'flex'; // Show lightbox
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.style.display = 'none'; // Hide lightbox
+    }
+  </script>
+</body>
+</html>

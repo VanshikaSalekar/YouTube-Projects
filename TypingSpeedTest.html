@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Speed Test</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #35ecf3, #5ba2ff);
+      overflow: hidden;
+    }
+
+    .test {
+      text-align: center;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    .sentence {
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #333;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .sentence span {
+      color: #007BFF;
+      font-weight: bold;
+    }
+
+    input {
+      padding: 12px;
+      width: 100%;
+      font-size: 18px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      border-color: #007BFF;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+      outline: none;
+    }
+
+    .result, .timer {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #333;
+      font-weight: bold;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .result.correct {
+      color: #28a745;
+    }
+
+    .result.incorrect {
+      color: #dc3545;
+    }
+
+    #restartButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
+}
+
+#restartButton:hover {
+  background-color: #0056b3;
+}
+
+#restartButton:active {
+  transform: scale(0.98);
+}
+
+#restartButton:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="test">
+    <div class="sentence" id="sentence">The quick brown fox jumps over the lazy dog.</div>
+    <input type="text" id="inputText" oninput="checkTyping()">
+    <div class="timer" id="timer">Time: 0.00s</div>
+    <div class="result" id="result"></div>
+    <button id="restartButton" onclick="restartTest()">Restart</button>
+  </div>
+
+  <script>
+    const sentenceElement = document.getElementById('sentence');
+    const inputElement = document.getElementById('inputText');
+    const resultElement = document.getElementById('result');
+    const timerElement = document.getElementById('timer');
+
+    const sentence = sentenceElement.textContent;
+    let startTime;
+    let timerInterval;
+
+    function startTimer() {
+      startTime = new Date().getTime();
+      timerInterval = setInterval(() => {
+        const elapsed = (new Date().getTime() - startTime) / 1000;
+        timerElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
+      }, 100);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function checkTyping() {
+      const input = inputElement.value;
+      const result = resultElement;
+
+      if (!startTime) { // Start timer if it hasn't started yet
+        startTimer();
+      }
+
+      if (input === sentence) {
+        stopTimer();
+        const endTime = new Date().getTime();
+        const timeTaken = (endTime - startTime) / 1000;
+        let feedback = `Correct! Time taken: ${timeTaken.toFixed(2)} seconds.`;
+        feedback += getSpeedFeedback(timeTaken);
+        result.textContent = feedback;
+        result.className = 'result correct';
+      } else {
+        result.textContent = 'Keep typing...';
+        result.className = 'result';
+      }
+
+      highlightText(input);
+    }
+
+    function getSpeedFeedback(time) {
+      if (time < 10) {
+        return ' Excellent! You are a speed typing pro.';
+      } else if (time < 20) {
+        return ' Great job! Keep practicing to get even faster.';
+      } else if (time < 30) {
+        return ' Good effort! Try to reduce your time with more practice.';
+      } else {
+        return ' Nice try! Focus on accuracy and speed with more practice.';
+      }
+    }
+
+    function highlightText(input) {
+      const sentenceWords = sentence.split(' ');
+      const inputWords = input.split(' ');
+
+      const highlightedSentence = sentenceWords.map((word, index) => {
+        if (inputWords[index] === word) {
+          return `<span>${word}</span>`;
+        } else {
+          return word;
+        }
+      }).join(' ');
+
+      sentenceElement.innerHTML = highlightedSentence;
+    }
+
+    inputElement.addEventListener('focus', function() {
+      if (!startTime) { // Only start timer if it's the first focus
+        startTimer();
+      }
+    });
+    function restartTest() {
+  // Clear the input field
+  inputElement.value = '';
+  
+  // Reset the sentence display
+  sentenceElement.innerHTML = sentence;
+  
+  // Reset the timer and result
+  stopTimer();
+  timerElement.textContent = 'Time: 0.00s';
+  resultElement.textContent = '';
+  resultElement.className = 'result';
+  
+  // Reset the start time
+  startTime = null;
+}
+
+  </script>
+</body>
+</html>

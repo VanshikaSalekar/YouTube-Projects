@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive To-Do List</title>
+  <style>
+    :root {
+      --bg-color: #f4f4f9;
+      --container-bg: #fff;
+      --text-color: #333;
+      --button-bg: #5c67f2;
+      --button-hover-bg: #4b56d3;
+      --task-bg: #f9f9f9;
+      --completed-bg: #c8e6c9;
+      --remove-btn-bg: #ff6b6b;
+      --edit-btn-bg: #ffca3a;
+    }
+    
+    /* Dark theme variables */
+    .dark-theme {
+      --bg-color: #333;
+      --container-bg: #444;
+      --text-color: #f4f4f9;
+      --button-bg: #5c67f2;
+      --button-hover-bg: #4b56d3;
+      --task-bg: #555;
+      --completed-bg: #4caf50;
+      --remove-btn-bg: #ff6b6b;
+      --edit-btn-bg: #ffca3a;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background-color 0.3s ease;
+    }
+    .container {
+      background-color: var(--container-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      color: var(--text-color);
+      transition: background-color 0.3s ease;
+    }
+    h1 {
+      font-size: 24px;
+      color: var(--text-color);
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 80%;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      border: 2px solid #ccc;
+      outline: none;
+      color: var(--text-color);
+      background-color: var(--task-bg);
+    }
+    button {
+      background-color: var(--button-bg);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: var(--button-hover-bg);
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      background-color: var(--task-bg);
+      margin-bottom: 8px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      position: relative;
+    }
+    li.completed span {
+      text-decoration: line-through;
+      color: #777;
+    }
+    li button {
+      background-color: var(--remove-btn-bg);
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    li button:hover {
+      background-color: #e55b5b;
+    }
+    li .edit-btn {
+      background-color: var(--edit-btn-bg);
+      margin-right: 10px;
+    }
+    li .edit-btn:hover {
+      background-color: #e6b32d;
+    }
+    .edit-input {
+      width: 60%;
+      padding: 6px;
+      font-size: 14px;
+      color: var(--text-color);
+      background-color: var(--task-bg);
+    }
+
+    /* Toggle theme button */
+    .theme-toggle {
+      background-color: transparent;
+      border: 2px solid var(--text-color);
+      color: var(--text-color);
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .theme-toggle:hover {
+      background-color: var(--text-color);
+      color: var(--container-bg);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do List</h1>
+    <button class="theme-toggle" onclick="toggleTheme()">Switch to Dark Theme</button>
+    <input type="text" id="taskInput" placeholder="New task...">
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    let isDarkTheme = false;
+
+    function toggleTheme() {
+      const body = document.body;
+      const themeToggleBtn = document.querySelector('.theme-toggle');
+
+      isDarkTheme = !isDarkTheme;
+      if (isDarkTheme) {
+        body.classList.add('dark-theme');
+        themeToggleBtn.textContent = 'Switch to Light Theme';
+      } else {
+        body.classList.remove('dark-theme');
+        themeToggleBtn.textContent = 'Switch to Dark Theme';
+      }
+    }
+
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const taskText = taskInput.value.trim();
+
+      if (taskText === "") return;
+
+      const taskList = document.getElementById('taskList');
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${taskText}</span>
+        <div>
+          <button class="edit-btn" onclick="editTask(this)">Edit</button>
+          <button onclick="removeTask(this)">Remove</button>
+        </div>
+      `;
+      li.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'BUTTON') {
+          li.classList.toggle('completed');
+        }
+      });
+
+      taskList.appendChild(li);
+      taskInput.value = '';
+    }
+
+    function removeTask(taskElement) {
+      const li = taskElement.parentElement.parentElement;
+      li.remove();
+    }
+
+    function editTask(editBtn) {
+      const li = editBtn.parentElement.parentElement;
+      const taskSpan = li.querySelector('span');
+      const taskText = taskSpan.textContent;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = taskText;
+      input.classList.add('edit-input');
+
+      const saveBtn = document.createElement('button');
+      saveBtn.textContent = 'Save';
+      saveBtn.classList.add('edit-btn');
+      saveBtn.onclick = function () {
+        taskSpan.textContent = input.value;
+        li.replaceChild(taskSpan, input);
+        li.querySelector('.edit-btn').textContent = 'Edit';
+        saveBtn.remove();
+      };
+
+      li.replaceChild(input, taskSpan);
+      editBtn.textContent = 'Cancel';
+      editBtn.onclick = function () {
+        li.replaceChild(taskSpan, input);
+        editBtn.textContent = 'Edit';
+        saveBtn.remove();
+      };
+
+      li.querySelector('div').appendChild(saveBtn);
+    }
+  </script>
+</body>
+</html>

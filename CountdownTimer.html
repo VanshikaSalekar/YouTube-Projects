@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Countdown Timer</title>
+  <style>
+    :root {
+      --background-light: linear-gradient(135deg, #e0e0e0, #ffffff);
+      --background-dark: linear-gradient(135deg, #333333, #1e1e1e);
+
+      --text-light: #333;
+      --text-dark: #f1f1f1;
+
+      --border-light: #ccc;
+      --border-dark: #444;
+
+      --input-background-light: #fff;
+      --input-background-dark: #555;
+
+      --input-text-light: #333;
+      --input-text-dark: #f1f1f1;
+
+      --button-start-light: #4caf50;
+      --button-start-dark: #388e3c;
+
+      --button-pause-light: #ffeb3b;
+      --button-pause-dark: #fbc02d;
+
+      --button-reset-light: #f44336;
+      --button-reset-dark: #c62828;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      background: var(--background-light);
+      color: var(--text-light);
+      transition: background 0.3s, color 0.3s;
+    }
+    
+    body.dark-mode {
+      background: var(--background-dark);
+      color: var(--text-dark);
+    }
+
+    .timer {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    body.dark-mode .timer {
+      background: rgba(30, 30, 30, 0.9); /* Slightly transparent dark background */
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+    
+    input[type="number"] {
+      padding: 12px;
+      font-size: 18px;
+      width: 120px;
+      border: 2px solid var(--border-light);
+      border-radius: 5px;
+      margin-right: 15px;
+      background-color: var(--input-background-light);
+      color: var(--input-text-light);
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+    
+    body.dark-mode input[type="number"] {
+      border-color: var(--border-dark);
+      background-color: var(--input-background-dark);
+      color: var(--input-text-dark);
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      margin: 5px;
+    }
+    
+    button:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+
+    .start {
+      background-color: var(--button-start-light);
+    }
+    
+    body.dark-mode .start {
+      background-color: var(--button-start-dark);
+    }
+
+    .pause {
+      background-color: var(--button-pause-light);
+    }
+    
+    body.dark-mode .pause {
+      background-color: var(--button-pause-dark);
+    }
+
+    .reset {
+      background-color: var(--button-reset-light);
+    }
+    
+    body.dark-mode .reset {
+      background-color: var(--button-reset-dark);
+    }
+    
+    #timeDisplay {
+      margin-top: 20px;
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .theme-toggle {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+    
+    .theme-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 34px;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      border-radius: 50%;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+</head>
+<body>
+  <div class="timer">
+    <h1>Enhanced Countdown Timer</h1>
+    <input type="number" id="minutes" placeholder="Minutes" min="0">
+    <button class="start" onclick="startTimer()">Start</button>
+    <button class="pause" onclick="pauseTimer()">Pause</button>
+    <button class="reset" onclick="resetTimer()">Reset</button>
+    <div id="timeDisplay">00:00</div>
+    <div class="theme-toggle">
+      <label class="theme-switch">
+        <input type="checkbox" id="themeSwitch">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <script>
+    let countdown;
+    let timeRemaining = 0;
+    let isPaused = false;
+
+    // Theme toggle functionality
+    document.getElementById('themeSwitch').addEventListener('change', (event) => {
+      document.body.classList.toggle('dark-mode', event.target.checked);
+    });
+
+    function startTimer() {
+      if (isPaused) {
+        isPaused = false;
+        return;
+      }
+
+      clearInterval(countdown);
+      const minutesInput = document.getElementById('minutes').value;
+      timeRemaining = minutesInput * 60;
+      displayTime(timeRemaining);
+
+      countdown = setInterval(() => {
+        if (!isPaused) {
+          timeRemaining--;
+          displayTime(timeRemaining);
+          
+          if (timeRemaining <= 0) {
+            clearInterval(countdown);
+            alert("Time's up!");
+          }
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      isPaused = true;
+    }
+
+    function resetTimer() {
+      clearInterval(countdown);
+      timeRemaining = 0;
+      displayTime(timeRemaining);
+      document.getElementById('minutes').value = '';
+      isPaused = false;
+    }
+
+    function displayTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainderSeconds = seconds % 60;
+      document.getElementById('timeDisplay').textContent = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+    }
+  </script>
+</body>
+</html>
